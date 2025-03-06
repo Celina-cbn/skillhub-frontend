@@ -1,44 +1,122 @@
-import * as React from 'react';
+'use client'
+
+import { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
+   const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // const handleSubmit() {
+
+  // }
+
     return (
       <Grid2 container sx={{ height: '100vh', width: '100vw' }}>
-        {/* Section de gauche avec l'image */}
-        <Grid2 
+        
+        <Grid2  size={{ xs: 0, sm: 6, md:6 }}
           sx={{ 
-            xs: 12, sm: 6, md: 6, // Responsive
-            width: '100%', height: '100vh', 
-            position: 'relative' // Obligatoire pour `fill`
+            position: 'relative', 
+            height: '100%', 
+            overflow: 'hidden' 
           }}
         >
           <Image
             src="/images/home.jpg"
             alt="Mon super visuel"
-            fill // ✅ Remplace `layout="fill"`
-            style={{ objectFit: "cover" }} // ✅ Remplace `objectFit`
+            fill
+            style={{ objectFit: "cover" }} 
           />
         </Grid2>
 
-        {/* Section de droite avec le formulaire */}
-        <Grid2 
+        <Grid2  size={{ xs: 12, sm: 6, md: 6 }}
           sx={{ 
-            xs: 12, sm: 6, md: 6, 
             display: 'flex', 
+            flexDirection: 'column', 
             alignItems: 'center', 
-            justifyContent: 'center'
+            justifyContent: 'center', 
+            backgroundColor: '#fff' 
           }}
         >
-          <Box sx={{ borderRadius: '40px', padding: '20px', background: 'rgba(255, 255, 255, 0.8)' }}>
-            <Typography>Adresse email</Typography>
-            <TextField id="textfeild-email" variant="outlined" fullWidth />
+          <Typography variant="h3" color="#000066" sx={{ marginBottom: "10px" }}>
+            SkillHub
+          </Typography>
 
-            <Typography>Password</Typography>
-            <TextField id="textfeild-password" variant="outlined" fullWidth />
+          <Typography sx={{ marginBottom: "50px" }}>
+            Don&apos;t have an account? {' '}
+            <Typography
+              component="span"
+              sx={{ color: 'blue', cursor: 'pointer', fontWeight: 'bold' }}
+              onClick={() => router.push('/auth/signup')}
+          >
+            Signup
+          </Typography>
+          </Typography>
+          
+
+          <Box 
+            sx={{ 
+              width: '90%', 
+              maxWidth: 450, 
+              padding: '45px', 
+              borderRadius: '20px', 
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' 
+            }}
+          >
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', marginBottom: '20px' }} >
+              Login
+            </Typography>
+            
+            <Typography>Email</Typography>
+            <TextField 
+              id="email" 
+              variant="outlined" 
+              fullWidth 
+              margin="normal"
+              sx={{ 
+                '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
+                marginTop: '0px' 
+              }}
+            />
+
+            <Typography sx={{ marginTop: "5px" }}>Password</Typography>
+            <TextField 
+              id="password" 
+              variant="outlined" 
+              type="password" 
+              fullWidth 
+              margin="normal"
+              sx={{ 
+                '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
+                marginTop: '0px' 
+              }}
+            />
+
+            {/* Mot de passe oublié aligné à droite */}
+            <Typography 
+              sx={{ 
+                textAlign: "right", 
+                color: "blue", 
+                cursor: "pointer", 
+                marginTop: "5px" 
+              }}
+            >            
+                Forgotten password ?
+            </Typography>
+
+            {/* Bouton centré */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <Button variant="contained" sx={{ borderRadius: '15px', width: '130px' }}>
+                Submit
+              </Button>
+            </Box>
           </Box>
         </Grid2>
+
       </Grid2>
-    )
+    );
 }
