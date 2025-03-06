@@ -100,17 +100,9 @@ export default function ArticlesPage() {
   }, []);
 
   
- // return (
- //   <Box sx={{ padding: 2, maxWidth: 800, margin: '0 auto' }}>
- //     {articles.map((article) => (
- //       <FeedCard key={article.id} article={article} />
- //     ))}
- //   </Box>
- // );
- // Filter articles based on the searchTerm (case-insensitive, by title)
  const filteredArticles = (() => {
   const term = searchTerm.toLowerCase().trim();
-  if (!term) return articles; // No search => show all
+  if (!term) return articles; 
   return articles.filter(
     (article) =>
       article.title.toLowerCase().includes(term) ||
@@ -119,6 +111,7 @@ export default function ArticlesPage() {
 })();
 
 return (
+
  <Box sx={{minHeight: '100vh', padding: 2 }}>
    {/* MUI AppBar with custom search styling */}
    <AppBar position="static">
@@ -141,7 +134,7 @@ return (
          component="div"
          sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
        >
-         MUI
+         SkillHub
        </Typography>
 
        {/* Our Search "box" */}
@@ -162,7 +155,8 @@ return (
    {/* Render articles (filtered by search) */}
    <Box sx={{ maxWidth: 800, margin: '0 auto', marginTop: 2 }}>
      {filteredArticles.map((article) => (
-       <FeedCard key={article.id} article={article} />
+      <FeedCard key={article.id} article={article} />
+       
      ))}
    </Box>
  </Box>

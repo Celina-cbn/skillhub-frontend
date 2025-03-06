@@ -13,6 +13,7 @@ import { red } from '@mui/material/colors';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ShareIcon from '@mui/icons-material/Share';
+import {useRouter} from 'next/navigation';
 
 /** Define an Article interface to specify the data shape. */
 export interface Article {
@@ -40,7 +41,10 @@ export default function FeedCard({ article }: FeedCardProps) {
   const [upvotes, setUpvotes] = React.useState(0);
   const [downvotes, setDownvotes] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
-
+  const router=useRouter();
+  const handleTitleClick = () => {
+    router.push(`/feed/articles/${article.id}`);
+  };
   const {
     authorName,
     authorAvatarUrl,
@@ -54,6 +58,7 @@ export default function FeedCard({ article }: FeedCardProps) {
     articleUrl
   } = article;
 
+  
   const handleUpvote = () => setUpvotes((prev) => prev + 1);
   const handleDownvote = () => setDownvotes((prev) => prev + 1);
   const handleExpandToggle = () => setExpanded((prev) => !prev);
@@ -117,8 +122,10 @@ export default function FeedCard({ article }: FeedCardProps) {
         </Box>
 
         {/* Title */}
-        <Typography variant="h5" sx={{ fontWeight: 700, marginBottom: 1 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, marginBottom: 1 }}
+        onClick={handleTitleClick}>
           {title}
+          
         </Typography>
 
         {/* Tags as chips */}

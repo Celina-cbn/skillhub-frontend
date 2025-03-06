@@ -4,6 +4,7 @@ import { Box, Card, Avatar, Typography, Chip, IconButton } from '@mui/material';
 import { red } from '@mui/material/colors';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { useParams } from 'next/navigation';
 
 interface SingleArticle {
   id: string;
@@ -20,22 +21,24 @@ interface SingleArticle {
 
 export default function SingleArticlePage() {
   // We'll keep the article in state
+  const params=useParams();
+  const articleId=params.articleId as string ;
   const [article, setArticle] = React.useState<SingleArticle | null>(null);
   const [upvotes, setUpvotes] = React.useState<number>(0);
   const [downvotes, setDownvotes] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(true);
-
+//for mock data 
   React.useEffect(() => {
     // Simulate fetching a single article (replace with your real API)
     (async () => {
       try {
         setLoading(true);
         // Fake a 1-second delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
         // Mocked single-article data
         const mockArticle: SingleArticle = {
-          id: '999',
+          id:articleId ,
           authorName: 'Arvind Kumar',
           authorAvatarUrl: '/static/images/avatar1.jpg',
           authorLevel: 'lvl: 9999',
@@ -48,7 +51,7 @@ export default function SingleArticlePage() {
             'into common concurrency pitfalls, how the JVM manages memory, and how to write ' +
             'efficient multi-threaded code.',
           timeAgo: '21h ago',
-          articleUrl: '/articles/java-qna-part3' // optional, if you want to share/copy link
+          articleUrl:  `/feed/articles/${articleId}`
         };
 
         // Set that in state
@@ -59,7 +62,8 @@ export default function SingleArticlePage() {
         setLoading(false);
       }
     })();
-  }, []);
+  },[articleId]);
+
 
   // Handler for up/down vote
   const handleUpvote = () => setUpvotes((prev) => prev + 1);
