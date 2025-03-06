@@ -20,4 +20,24 @@ export async function getAllArticles() {
   return response.json(); 
 }
 
+export interface UpdateArticleForm {
+  title: string;
+  domain: string;
+  content: string;
+  tags: string;
+}
+
+export async function updateArticle(formData: UpdateArticleForm) {
+  // Replace '/api/articles' with your real endpoint, e.g. `/api/articles/${id}`
+  const response = await fetch('/api/articles', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  });
+
+  if (!response.ok) {
+    // You can tailor the error message or response parsing as needed
+    throw new Error('Failed to update article');
+  }
+}
 

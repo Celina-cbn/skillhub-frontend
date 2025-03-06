@@ -14,6 +14,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ShareIcon from '@mui/icons-material/Share';
 import {useRouter} from 'next/navigation';
+import { downvoteArticle, getVotes, upvoteArticle } from '@/services/api';
 
 /** Define an Article interface to specify the data shape. */
 export interface Article {
@@ -58,9 +59,43 @@ export default function FeedCard({ article }: FeedCardProps) {
     articleUrl
   } = article;
 
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const { upvotes: up, downvotes: down } = await getVotes(article.id);
+        setUpvotes(up);
+        setDownvotes(down);
+      } catch (error) {
+        console.error('Failed to get votes', error);
+      }
+    })();
+  }, [article.id]);
+
+  const handleUpvote = async () => {
+    try {
+      setUpvotes((prev) => prev + 1); 
+      await upvoteArticle(article.id);
+    } catch (error) {
+      setUpvotes((prev) => prev - 1); 
+      console.error('Failed to get votes', error);
+
+    }
+  };
   
-  const handleUpvote = () => setUpvotes((prev) => prev + 1);
-  const handleDownvote = () => setDownvotes((prev) => prev + 1);
+  
+  const handleDownvote = async () => {
+    try {
+      setDownvotes((prev) => prev + 1);
+      await downvoteArticle(article.id);
+    } catch (error) {
+      console.error('Failed to downvote', error);
+      alert('Failed to downvote');
+      setDownvotes((prev) => (prev > 0 ? prev - 1 : 0));
+    }
+  };
+  
+  
+  
   const handleExpandToggle = () => setExpanded((prev) => !prev);
 
   /** Copies the article URL (if available) to the clipboard. */
@@ -70,7 +105,6 @@ export default function FeedCard({ article }: FeedCardProps) {
       return;
     }
     try {
-      // Example: prefix with window.location.origin to form a full URL
       const fullUrl = window.location.origin + articleUrl;
       await navigator.clipboard.writeText(fullUrl);
       alert('Link copied to clipboard!');
