@@ -1,0 +1,47 @@
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+export const loginService = async (email: string, password: string) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); 
+            throw new Error(errorData.message);
+        }
+
+        return await response.json(); 
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+        throw new Error("Error connecting to API");
+    }
+};
+
+export const signupService = async (name: string, email: string, password: string) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); 
+            throw new Error(errorData.message);
+        }
+
+        return await response.json(); 
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+        throw new Error("Error connecting to API");
+    }
+};

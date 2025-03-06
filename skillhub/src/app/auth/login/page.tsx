@@ -5,15 +5,23 @@ import Grid2 from '@mui/material/Grid2';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { loginService } from '@/services/authService';
 
 export default function Login() {
    const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // const handleSubmit() {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  // }
+    try {
+      await loginService(email, password); 
+      // router.push('/home'); // ✅ Redirection après connexion
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error.message);
+    }
+  }
 
     return (
       <Grid2 container sx={{ height: '100vh', width: '100vw' }}>
@@ -77,6 +85,7 @@ export default function Login() {
               variant="outlined" 
               fullWidth 
               margin="normal"
+              onChange={(e) => setEmail(e.target.value)}
               sx={{ 
                 '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
                 marginTop: '0px' 
@@ -90,13 +99,13 @@ export default function Login() {
               type="password" 
               fullWidth 
               margin="normal"
+              onChange={(e) => setPassword(e.target.value)}
               sx={{ 
                 '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
                 marginTop: '0px' 
               }}
             />
 
-            {/* Mot de passe oublié aligné à droite */}
             <Typography 
               sx={{ 
                 textAlign: "right", 
@@ -110,7 +119,7 @@ export default function Login() {
 
             {/* Bouton centré */}
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-              <Button variant="contained" sx={{ borderRadius: '15px', width: '130px' }}>
+              <Button type='submit' variant="contained" sx={{ borderRadius: '15px', width: '130px' }} onClick={(e) => handleSubmit(e)} disabled={email==='' || password===''} >
                 Submit
               </Button>
             </Box>

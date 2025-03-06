@@ -5,16 +5,60 @@ import Grid2 from '@mui/material/Grid2';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { signupService } from '@/services/authService';
 
-const inputs = [
-  {id: 1, name: 'Name', value: '', type: 'text'},
-  {id: 2, name: 'Email', value: '', type: 'text'},
-  {id: 3, name: 'Password', value: '', type: 'password'},
-  {id: 4, name: 'Confirm password', value: '', type: 'password'}
+const InputsForm = [
+  {id: 1, name: 'Name', type: 'text'},
+  {id: 2, name: 'Email', type: 'text'},
+  {id: 3, name: 'Password', type: 'password'},
+  {id: 4, name: 'Confirm password', type: 'password'}
 ]
 
 export default function Signup() {
   const router = useRouter();
+  const [inputs, setInputs] = React.useState(
+    InputsForm.map((input) => ({ ...input, value: '' }))
+  );
+
+  const handleInputChange = (id: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = event.target;
+      setInputs(prevInputs =>
+        prevInputs.map(input =>
+          input.id === id ? { ...input, value } : input 
+        )
+      );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const name = inputs.find(input => input.name === 'Name')?.value || '';
+      const email = inputs.find(input => input.name === 'Email')?.value || '';
+      const password = inputs.find(input => input.name === 'Password')?.value || '';
+
+      await signupService(name, email, password); 
+      // router.push('/home'); // ✅ Redirection après connexion
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+        console.error('Erreur lors de la connexion:');
+    }
+  }
+
+  const isEmpty = () => {
+    return inputs.some((input) => {
+
+      if (input.id === 4) {
+        const password = inputs.find((el) => el.id === 3)?.value;
+        return input.value !== password;
+      } else if (input.value === '') {
+        return true;
+      }else{
+              return false;
+      }
+    });
+  };
+
     return (
       <Grid2 container sx={{ height: '100vh', width: '100vw' }}>
         
@@ -76,7 +120,9 @@ export default function Signup() {
                 <Typography> {input.name} </Typography>
                 <TextField 
                   id={input.name}
-                  variant="outlined" 
+                  value={input.value}
+                  onChange={(event) => handleInputChange(input.id, event)} 
+                  variant="outlined"
                   fullWidth 
                   type={input.type}
                   margin="normal"
@@ -92,7 +138,7 @@ export default function Signup() {
 
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-              <Button variant="contained" sx={{ borderRadius: '15px', width: '130px' }}> Submit </Button>
+              <Button onClick={(e) => handleSubmit(e)} variant="contained" sx={{ borderRadius: '15px', width: '130px' }} disabled={isEmpty()}> Submit </Button>
             </Box>
           </Box>
         </Grid2>
