@@ -1,9 +1,10 @@
 "use client";
 import * as React from 'react';
 import FeedCard, { Article } from '../../component/FeedCard';
-import { alpha, AppBar, Box, IconButton, InputBase, styled, Toolbar, Typography } from '@mui/material';
+import { alpha, AppBar, Box, IconButton, InputBase, Menu, MenuItem, styled, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import  { useRouter } from 'next/navigation';
 
 
 // ----- MUI Search styles from the snippet -----
@@ -54,7 +55,9 @@ export default function ArticlesPage() {
   // Local state for articles array and loading indicator
   const [articles, setArticles] = React.useState<Article[]>([]);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
-
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const router = useRouter();
   React.useEffect(() => {
     (async () => {
       try {
@@ -110,6 +113,35 @@ export default function ArticlesPage() {
   );
 })();
 
+const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  setAnchorEl(event.currentTarget);
+};
+const handleMenuClose = () => {
+  setAnchorEl(null);
+};
+   // Handler for Add Article
+   const handleAddArticle = () => {
+    // Navigate to /feed/article/create
+    router.push('/feed/article/create');
+    handleMenuClose();
+  };
+
+    // Handler for Profile
+    const handleProfile = () => {
+      router.push('/profile');
+      handleMenuClose();
+    };
+
+  // Handler for Logout
+  const handleLogout = async () => {
+    //logout service
+    alert('User logged out');
+    handleMenuClose();
+  };
+
+  
+  
+
 return (
 
  <Box sx={{minHeight: '100vh', padding: 2 }}>
@@ -123,9 +155,16 @@ return (
          color="inherit"
          aria-label="open drawer"
          sx={{ mr: 2 }}
+         onClick={handleMenuOpen}
        >
          <MenuIcon />
        </IconButton>
+       {/* The popup menu */}
+       <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+            <MenuItem onClick={handleAddArticle}>Add Article</MenuItem>
+            <MenuItem onClick={handleProfile}>Profile Page</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
 
        {/* Page/brand title */}
        <Typography

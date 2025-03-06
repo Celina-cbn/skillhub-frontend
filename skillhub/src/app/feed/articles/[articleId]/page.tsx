@@ -34,7 +34,7 @@ export default function SingleArticlePage() {
       try {
         setLoading(true);
         // Fake a 1-second delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 200));
 
         // Mocked single-article data
         const mockArticle: SingleArticle = {
