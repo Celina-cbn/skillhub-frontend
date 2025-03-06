@@ -5,6 +5,8 @@ import { red } from '@mui/material/colors';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useParams } from 'next/navigation';
+import NavBar from '@/app/component/NavBar';
+
 
 interface SingleArticle {
   id: string;
@@ -14,7 +16,7 @@ interface SingleArticle {
   domain: string;
   tags: string[];
   title: string;
-  content: string; // Full content instead of short/long snippet
+  content: string; 
   timeAgo: string;
   articleUrl?: string;
 }
@@ -27,13 +29,14 @@ export default function SingleArticlePage() {
   const [upvotes, setUpvotes] = React.useState<number>(0);
   const [downvotes, setDownvotes] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 //for mock data 
   React.useEffect(() => {
     // Simulate fetching a single article (replace with your real API)
     (async () => {
       try {
         setLoading(true);
-        // Fake a 1-second delay
+        // Fake delay
         await new Promise((resolve) => setTimeout(resolve, 200));
 
         // Mocked single-article data
@@ -68,6 +71,8 @@ export default function SingleArticlePage() {
   // Handler for up/down vote
   const handleUpvote = () => setUpvotes((prev) => prev + 1);
   const handleDownvote = () => setDownvotes((prev) => prev + 1);
+ 
+  
 
   // If still loading, show a placeholder (e.g., spinner)
   if (loading) {
@@ -91,72 +96,75 @@ export default function SingleArticlePage() {
 
   // Render the single article in a Card
   return (
-    <Box sx={{ padding: 2, maxWidth: 800, margin: '0 auto' }}>
-      <Card sx={{ padding: 2 }}>
-        {/* Author info row */}
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>
-          <Avatar
-            alt={article.authorName}
-            src={article.authorAvatarUrl}
-            sx={{ bgcolor: red[500], width: 56, height: 56, marginRight: 2 }}
-          />
-          <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {article.authorName}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary', marginRight: 1 }}>
-              {article.timeAgo}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', fontStyle: 'italic', marginLeft: 1 }}
-            >
-              {article.domain}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', fontStyle: 'italic', marginLeft: 2 }}
-            >
-              {article.authorLevel}
-            </Typography>
+    <>
+    <NavBar
+      searchTerm={searchTerm}
+      onSearchTermChange={(newTerm) => setSearchTerm(newTerm)} /><Box sx={{ padding: 2, maxWidth: 800, margin: '0 auto' }}>
+
+        
+        <Card sx={{ padding: 2 }}>
+          {/* Author info row */}
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>
+            <Avatar
+              alt={article.authorName}
+              src={article.authorAvatarUrl}
+              sx={{ bgcolor: red[500], width: 56, height: 56, marginRight: 2 }} />
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {article.authorName}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', marginRight: 1 }}>
+                {article.timeAgo}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', fontStyle: 'italic', marginLeft: 1 }}
+              >
+                {article.domain}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', fontStyle: 'italic', marginLeft: 2 }}
+              >
+                {article.authorLevel}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
 
-        {/* Title */}
-        <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 2 }}>
-          {article.title}
-        </Typography>
-
-        {/* Tags as Chips */}
-        <Box sx={{ marginBottom: 2 }}>
-          {article.tags.map((tag) => (
-            <Chip
-              key={tag}
-              label={tag}
-              variant="outlined"
-              sx={{ marginRight: 1, marginBottom: 1 }}
-            />
-          ))}
-        </Box>
-
-        {/* Full content */}
-        <Typography variant="body1" sx={{ color: 'text.secondary', marginBottom: 2 }}>
-          {article.content}
-        </Typography>
-
-        {/* Upvote / Downvote row */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton onClick={handleUpvote}>
-            <ArrowUpwardIcon />
-          </IconButton>
-          <Typography variant="body2" sx={{ minWidth: 30, textAlign: 'center' }}>
-            {upvotes - downvotes}
+          {/* Title */}
+          <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 2 }}>
+            {article.title}
           </Typography>
-          <IconButton onClick={handleDownvote}>
-            <ArrowDownwardIcon />
-          </IconButton>
-        </Box>
-      </Card>
-    </Box>
+
+          {/* Tags as Chips */}
+          <Box sx={{ marginBottom: 2 }}>
+            {article.tags.map((tag) => (
+              <Chip
+                key={tag}
+                label={tag}
+                variant="outlined"
+                sx={{ marginRight: 1, marginBottom: 1 }} />
+            ))}
+          </Box>
+
+          {/* Full content */}
+          <Typography variant="body1" sx={{ color: 'text.secondary', marginBottom: 2 }}>
+            {article.content}
+          </Typography>
+
+          {/* Upvote / Downvote row */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton onClick={handleUpvote}>
+              <ArrowUpwardIcon />
+            </IconButton>
+            <Typography variant="body2" sx={{ minWidth: 30, textAlign: 'center' }}>
+              {upvotes - downvotes}
+            </Typography>
+            <IconButton onClick={handleDownvote}>
+              <ArrowDownwardIcon />
+            </IconButton>
+          </Box>
+        </Card>
+      </Box></>
   );
 }

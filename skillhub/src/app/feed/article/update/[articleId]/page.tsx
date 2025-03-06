@@ -6,71 +6,60 @@ import {
   Button,
   Typography
 } from '@mui/material';
+import { updateArticle } from '@/services/api';
 import NavBar from '@/app/component/NavBar';
 
-interface NewArticleForm {
+
+
+// You can customize the interface fields as needed
+interface UpdateArticleForm {
   title: string;
   domain: string;
   content: string;
   tags: string;     
-  
 }
 
-export default function CreateArticlePage() {
+export default function UpdateArticlePage() {
     const [searchTerm, setSearchTerm] = React.useState<string>("");
   
- 
-
-  const [formData, setFormData] = React.useState<NewArticleForm>({
+  // State for your form
+  const [formData, setFormData] = React.useState<UpdateArticleForm>({
     title: '',
     domain: '',
     content: '',
     tags: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Handle input changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
 
-  // Submit the form
+  // Submit the form with a PUT request
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // Example: POST to some endpoint
-      const response = await fetch('/api/articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create article');
-      }
-
-      alert('Article created successfully!');
-
-      // Optionally redirect or reset the form
-      // const newArticle = await response.json();
-      // router.push(`/feed/articles/${newArticle.id}`);
-
+        await updateArticle(formData);
+      alert('Article updated successfully!');
     } catch (error) {
       console.error(error);
-      alert('Error creating article.');
+      alert('Error updating article.');
     }
   };
 
   return (
     <><NavBar
       searchTerm={searchTerm}
-      onSearchTermChange={(newTerm) => setSearchTerm(newTerm)} /><Box sx={{ padding: 2, maxWidth: 800, margin: '0 auto' }}></Box><Box sx={{ padding: 3, maxWidth: 800, margin: '0 auto' }}>
+      onSearchTermChange={(newTerm) => setSearchTerm(newTerm)} /><Box sx={{ padding: 3, maxWidth: 800, margin: '0 auto' }}>
         <Typography variant="h4" sx={{ marginBottom: 2 }}>
-          Create New Article
+          Update Article
         </Typography>
-
 
         <form onSubmit={handleSubmit}>
           {/* Title */}
@@ -101,7 +90,7 @@ export default function CreateArticlePage() {
             fullWidth
             margin="normal" />
 
-          {/* Content (bigger multiline) */}
+          {/* Content */}
           <TextField
             label="Content"
             name="content"
@@ -110,17 +99,15 @@ export default function CreateArticlePage() {
             fullWidth
             margin="normal"
             multiline
-            rows={8} // bigger text area
+            rows={8}
             required />
-
-
 
           <Button
             type="submit"
             variant="contained"
             sx={{ marginTop: 2 }}
           >
-            Create Article
+            Update Article
           </Button>
         </form>
       </Box></>
