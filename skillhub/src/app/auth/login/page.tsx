@@ -26,7 +26,7 @@ export default function Login() {
     return (
       <Grid2 container sx={{ height: '100vh', width: '100vw' }}>
         
-        <Grid2  size={{ xs: 0, sm: 6, md:6 }}
+        <Grid2 size={{ xs: 0, sm: 6, md:6 }}
           sx={{ 
             position: 'relative', 
             height: '100%', 

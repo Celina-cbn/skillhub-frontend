@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react';
 import { Box, IconButton, TextField, Button, Typography, Paper, Divider } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -41,7 +43,7 @@ const FloatingChatWindow = () => {
             position: 'fixed',
             bottom: 20,
             right: 20,
-            width: 300,
+            width: 400,
             height: 400,
             padding: 2,
             boxShadow: 3,
@@ -71,7 +73,8 @@ const FloatingChatWindow = () => {
             }}
           >
             {messages.reverse().map((msg, index) => (
-              <Box key={index} sx={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
+              <Box key={index} sx={{ display: 'flex', flexDirection: 'row', alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start'
+               }}>
                 {msg.sender !== 'user' && (
                   <Box sx={{ marginRight: 1 }}>
                     <img src="https://img.freepik.com/vecteurs-libre/robot-vectoriel-graident-ai_78370-4114.jpg" alt="sender" style={{ width: 30, height: 30, borderRadius: '50%' }} />
@@ -82,7 +85,7 @@ const FloatingChatWindow = () => {
                   sx={{
                     backgroundColor: msg.sender === 'user' ? 'lightblue' : 'lightgray',
                     padding: 1,
-                    borderRadius: 1,
+                    borderRadius: '15px',
                     wordWrap: 'break-word',
                   }}
                 >
@@ -91,8 +94,6 @@ const FloatingChatWindow = () => {
               </Box>
             ))}
           </Box>
-
-
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
             <TextField
@@ -103,6 +104,10 @@ const FloatingChatWindow = () => {
               label="Your Question"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              sx={{ 
+
+                '& .MuiOutlinedInput-root': { height: '45px' },
+              }}
             />
             <Button onClick={handleSend} color="primary" size="small" startIcon={<SendIcon />} />
           </Box>
