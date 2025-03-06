@@ -1,24 +1,35 @@
 'use client'
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { signupService } from '@/services/authService';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { InputsForm } from '@/utils/inputsSingnup';
 
-const InputsForm = [
-  {id: 1, name: 'Name', type: 'text'},
-  {id: 2, name: 'Email', type: 'text'},
-  {id: 3, name: 'Password', type: 'password'},
-  {id: 4, name: 'Confirm password', type: 'password'}
-]
 
 export default function Signup() {
   const router = useRouter();
-  const [inputs, setInputs] = React.useState(
+  const [inputs, setInputs] = useState(
     InputsForm.map((input) => ({ ...input, value: '' }))
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+    const handleClickShowPassword = () => {
+      setShowPassword((show) => !show);
+    };
+
+    const handleClickShowConfirmPassword = () => {
+      setShowConfirmPassword((show) => !show);
+    };
+  
+    useEffect(() => {
+      setShowPassword(false);
+      setShowConfirmPassword(false);
+    }, []);
 
   const handleInputChange = (id: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = event.target;
@@ -54,7 +65,7 @@ export default function Signup() {
       } else if (input.value === '') {
         return true;
       }else{
-              return false;
+        return false;
       }
     });
   };
@@ -118,6 +129,32 @@ export default function Signup() {
             {inputs.map((input) => (
               <Grid2 key={input.id} sx={{ display: 'flxe', flexDirection: 'row' }}>
                 <Typography> {input.name} </Typography>
+                {input.type === 'password' ? (
+                  <TextField
+                    id={input.name}
+                    type={input.name === 'Password' ? (showPassword ? 'text' : 'password') : (showConfirmPassword ? 'text' : 'password')}
+                    fullWidth
+                    value={input.value}
+                    onChange={(event) => handleInputChange(input.id, event)}
+                    sx={{
+                      marginTop: '0px',
+                      marginRight: '25px',
+                    }}
+                    InputProps={{
+                      sx: { 
+                        borderRadius: '20px',
+                        height: '45px'
+                      },
+                      endAdornment: ( 
+                        <InputAdornment position="end">
+                          <IconButton data-testid="icon-visibility" onClick={input.name === 'Password' ? handleClickShowPassword : handleClickShowConfirmPassword}>
+                            {input.name === 'Password' ? (showPassword ? <VisibilityOff /> : <Visibility />) : (showConfirmPassword ? <VisibilityOff /> : <Visibility />)}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                ) : (
                 <TextField 
                   id={input.name}
                   value={input.value}
@@ -130,13 +167,10 @@ export default function Signup() {
                     '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
                     marginTop: '0px' 
                   }}
-                />  
+                />                    
+                )}
               </Grid2>
-            
             ))}
-
-
-
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <Button onClick={(e) => handleSubmit(e)} variant="contained" sx={{ borderRadius: '15px', width: '130px' }} disabled={isEmpty()}> Submit </Button>
             </Box>

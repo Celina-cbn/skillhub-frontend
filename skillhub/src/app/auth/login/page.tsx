@@ -1,16 +1,26 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { loginService } from '@/services/authService';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function Login() {
    const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword((show) => !show);
+  };
+
+  useEffect(() => {
+    setShowPassword(false);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,16 +103,28 @@ export default function Login() {
             />
 
             <Typography sx={{ marginTop: "5px" }}>Password</Typography>
-            <TextField 
-              id="password" 
-              variant="outlined" 
-              type="password" 
-              fullWidth 
-              margin="normal"
+            <TextField
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ 
-                '& .MuiOutlinedInput-root': { borderRadius: '20px', height: '45px' },
-                marginTop: '0px' 
+              sx={{
+                marginTop: '0px',
+                marginRight: '25px',
+              }}
+              InputProps={{
+                sx: { 
+                  borderRadius: '20px',
+                  height: '45px'
+                },
+                endAdornment: ( 
+                  <InputAdornment position="end">
+                    <IconButton data-testid="icon-visibility" onClick={handleClickShowPassword}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
 
@@ -117,7 +139,6 @@ export default function Login() {
                 Forgotten password ?
             </Typography>
 
-            {/* Bouton centré */}
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <Button type='submit' variant="contained" sx={{ borderRadius: '15px', width: '130px' }} onClick={(e) => handleSubmit(e)} disabled={email==='' || password===''} >
                 Submit

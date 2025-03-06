@@ -5,17 +5,13 @@ import { Box, IconButton, TextField, Button, Typography, Paper, Divider } from '
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
+import { IMessage } from '@/interfaces/Chatbot';
 
-
-type Message = {
-  text: string;
-  sender: string;
-};
 
 const FloatingChatWindow = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   const handleSend = () => {
     if (message.trim()) {
