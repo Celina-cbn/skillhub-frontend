@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Avatar, Grid2 } from '@mui/material';
+import { getProfile } from '@/services/profileService';
 
 const userProfile = {
   name: 'Louis DUCIEL',
@@ -9,6 +10,17 @@ const userProfile = {
 };
 
 const Profile = () => {
+  // const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await getProfile();
+  //     setUser(data);
+  //   };
+
+  //   fetchData();
+  // }, [])
+
   return (
     <Grid2 container sx={{ height: '100vh', width: '100vw' }}>
 
