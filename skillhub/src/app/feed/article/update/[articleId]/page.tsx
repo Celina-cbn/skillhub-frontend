@@ -4,10 +4,11 @@ import {
   Box,
   TextField,
   Button,
-  Typography
-} from '@mui/material';
-import { updateArticle } from '@/services/api';
+  Typography,
+  CircularProgress} from '@mui/material';
+import { getArticleById, updateArticle } from '@/services/api';
 import NavBar from '@/app/component/NavBar';
+import { useParams } from 'next/navigation';
 
 
 
@@ -21,6 +22,8 @@ interface UpdateArticleForm {
 
 export default function UpdateArticlePage() {
     const [searchTerm, setSearchTerm] = React.useState<string>("");
+    const params = useParams();
+    const articleId = params.articleId as string;
   
   // State for your form
   const [formData, setFormData] = React.useState<UpdateArticleForm>({
@@ -29,6 +32,31 @@ export default function UpdateArticlePage() {
     content: '',
     tags: '',
   });
+
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+
+ React.useEffect(() => {
+  (async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      const existingArticle = await getArticleById(articleId);
+      setFormData({
+        title: existingArticle.title || '',
+        domain: existingArticle.domain || '',
+        content: existingArticle.content || '',
+        tags: existingArticle.tags || '',
+      });
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load the article.');
+    } finally {
+      setLoading(false);
+    }
+  })();
+}, [articleId]);
 
   // Handle input changes
   const handleChange = (
@@ -43,15 +71,31 @@ export default function UpdateArticlePage() {
   // Submit the form with a PUT request
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-        await updateArticle(formData);
+      // If `article` is in your props or state, you have `article.id`
+      await updateArticle(articleId, formData);
       alert('Article updated successfully!');
     } catch (error) {
       console.error(error);
       alert('Error updating article.');
     }
   };
+  if (loading) {
+    return (
+      <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+  if (error) {
+    return (
+      <Box sx={{ textAlign: 'center', marginTop: 4 }}>
+        <Typography variant="h6" color="error">
+          {error}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <><NavBar
