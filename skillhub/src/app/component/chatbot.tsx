@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, IconButton, TextField, Button, Typography, Paper, Divider } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-
 
 type Message = {
   text: string;
@@ -14,13 +15,63 @@ const FloatingChatWindow = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [animatedMessage, setAnimatedMessage] = useState('');
+  const chatEndRef = useRef<HTMLDivElement | null>(null); // Reference to scroll to the bottom
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (message.trim()) {
       setMessages([...messages, { text: message, sender: 'user' }]);
       setMessage('');
+
+      let content = messages.length
+        ? messages.map((msg) => `${msg.sender}, ${msg.text}\n`).join('') + `role : user,  ${message}`
+        : message;
+
+      let type = messages.length ? 'chatbot' : '';
+
+      try {
+        const response = await fetch('http://2080-94-228-190-38.ngrok-free.app/chatbot/chatbot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: content, type: type }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setMessages((prevMessages) => [...prevMessages, { text: '', sender: 'assistant' }]);
+          animateMessage(data.summary);
+        } else {
+          console.error('Failed to send message');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
+
+  const animateMessage = (text: string) => {
+    let index = 0;
+    setAnimatedMessage('');
+
+    const interval = setInterval(() => {
+      setAnimatedMessage((prev) => prev + text.charAt(index));
+      index++;
+      if (index >= text.length) {
+        clearInterval(interval);
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1].text = text;
+          return updatedMessages;
+        });
+        setAnimatedMessage('');
+      }
+    }, 10);
+  };
+
+  // Scroll to the bottom whenever a new message is added or after animation is complete
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, animatedMessage]); // Trigger scroll when messages or animatedMessage changes
 
   return (
     <Box>
@@ -28,7 +79,13 @@ const FloatingChatWindow = () => {
         <IconButton
           color="primary"
           onClick={() => setOpen(true)}
-          sx={{ position: 'fixed', bottom: 20, right: 20, backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
+          sx={{
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            backgroundColor: 'blue',
+            '&:hover': { backgroundColor: 'darkblue' },
+          }}
         >
           <ChatIcon sx={{ color: 'white' }} />
         </IconButton>
@@ -70,11 +127,15 @@ const FloatingChatWindow = () => {
               padding: 1,
             }}
           >
-            {messages.reverse().map((msg, index) => (
+            {messages.map((msg, index) => (
               <Box key={index} sx={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
                 {msg.sender !== 'user' && (
                   <Box sx={{ marginRight: 1 }}>
-                    <img src="https://img.freepik.com/vecteurs-libre/robot-vectoriel-graident-ai_78370-4114.jpg" alt="sender" style={{ width: 30, height: 30, borderRadius: '50%' }} />
+                    <img
+                      src="https://img.freepik.com/vecteurs-libre/robot-vectoriel-graident-ai_78370-4114.jpg"
+                      alt="sender"
+                      style={{ width: 30, height: 30, borderRadius: '50%' }}
+                    />
                   </Box>
                 )}
                 <Typography
@@ -86,13 +147,14 @@ const FloatingChatWindow = () => {
                     wordWrap: 'break-word',
                   }}
                 >
-                  {msg.text}
+                  {msg.sender === 'assistant' && index === messages.length - 1 && animatedMessage
+                    ? animatedMessage
+                    : msg.text}
                 </Typography>
               </Box>
             ))}
+            <div ref={chatEndRef} /> {/* Invisible div to scroll to the bottom */}
           </Box>
-
-
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
             <TextField
