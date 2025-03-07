@@ -23,17 +23,18 @@ const FloatingChatWindow = () => {
       setMessages([...messages, { text: message, sender: 'user' }]);
       setMessage('');
 
-      let content = messages.length
-        ? messages.map((msg) => `${msg.sender}, ${msg.text}\n`).join('') + `role : user,  ${message}`
+      let history = messages.length
+        ? messages.map((msg) => `role :${msg.sender}, content :${msg.text}\n`).join('')
         : message;
 
-      let type = messages.length ? 'chatbot' : '';
-
+      let type = messages.length ? 'start' : '';
+      console.log(history);
+      console.log(message);
       try {
         const response = await fetch('http://2080-94-228-190-38.ngrok-free.app/chatbot/chatbot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: content, type: type }),
+          body: JSON.stringify({ history: history, type: type, message: `role : user, ${message}` }),
         });
 
         if (response.ok) {
