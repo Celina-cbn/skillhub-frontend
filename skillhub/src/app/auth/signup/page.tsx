@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { signupService } from '@/services/authService';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { InputsForm } from '@/utils/inputsSingnup';
+import { toast } from 'react-toastify';
 
 
 export default function Signup() {
@@ -49,10 +50,15 @@ export default function Signup() {
       const password = inputs.find(input => input.name === 'Password')?.value || '';
 
       await signupService(name, email, password); 
-      // router.push('/home'); // ✅ Redirection après connexion
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      toast.success("Inscription successful!", {
+        autoClose: 3000,
+    });
+      router.push('/auth/login');
     } catch (error) {
-        console.error('Erreur lors de la connexion:');
+        toast.error("Error while register", {
+          autoClose: 3000,
+      });
+        console.error('Erreur', error.message);
     }
   }
 

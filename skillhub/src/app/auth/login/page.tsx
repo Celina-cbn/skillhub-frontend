@@ -5,11 +5,15 @@ import Grid2 from '@mui/material/Grid2';
 import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { loginService } from '@/services/authService';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '@/store/userSlice';
+import { AppDispatch } from '@/store';
 
 export default function Login() {
    const router = useRouter();
+   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -26,10 +30,16 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await loginService(email, password); 
-      // router.push('/home'); // ✅ Redirection après connexion
+      await dispatch(loginUser({ email, password })).unwrap();
+      toast.success("Connection successful!", {
+        autoClose: 3000,
+    });
+      router.push('/feed/articles');
     } catch (error) {
-        console.error('Erreur lors de la connexion:', error.message);
+        toast.error("Error while connecting", {
+          autoClose: 3000,
+      });
+        console.error('Error while connecting:', error.message);
     }
   }
 

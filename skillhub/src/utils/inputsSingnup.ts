@@ -1,4 +1,4 @@
-import { IInputs } from "@/interfaces/Signup";
+import { IInputs } from "@/interfaces/user";
 
 
 export const InputsForm : IInputs[] = [

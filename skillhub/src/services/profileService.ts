@@ -1,8 +1,8 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const getProfile = async () => {
+export const getProfile = async (id: number) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/profil`, {
+        const response = await fetch(`${API_BASE_URL}/user/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

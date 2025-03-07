@@ -1,9 +1,13 @@
-import { Grid2 } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import { createStore } from "redux";
 
-export default function Home() {
+export default function Home({ Component, pageProps }) {
+  const store = createStore(rootReducer)
+  
   return (
-    <Grid2>
-      Bienvenue
-    </Grid2>
+      <>
+          <ToastContainer />
+          <Component {...pageProps} />
+      </>
   );
 }

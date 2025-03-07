@@ -93,7 +93,7 @@ export default function NavBar({ searchTerm, onSearchTermChange }: NavBarProps) 
   
       // Handler for Profile
       const handleProfile = () => {
-        router.push('/profile');
+        router.push('/profil');
         handleMenuClose();
       };
   

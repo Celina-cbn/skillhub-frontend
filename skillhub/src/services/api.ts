@@ -1,5 +1,5 @@
 
-export const BASE_URL = 'https://my-backend.com/api'; 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export interface ArticleForm {
   title: string;
@@ -13,21 +13,21 @@ export interface VoteData {
 }
 
 export async function getArticleById(articleId: string) {
-  const response = await fetch(`${BASE_URL}/articles/${articleId}`);
+  const response = await fetch(`${API_BASE_URL}/articles/${articleId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch article');
   }
   return response.json(); 
 }
 export async function getAllArticles() {
-  const response = await fetch(`${BASE_URL}/articles`);
+  const response = await fetch(`${API_BASE_URL}/article/articles`);
   if (!response.ok) {
     throw new Error('Failed to fetch articles');
   }
   return response.json(); 
 }
 export async function createArticle(formData: ArticleForm): Promise<void> {
-  const response = await fetch(`${BASE_URL}/articles`, {
+  const response = await fetch(`${API_BASE_URL}/articles`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
@@ -37,7 +37,7 @@ export async function createArticle(formData: ArticleForm): Promise<void> {
   }
 }
 export async function updateArticle(articleId: string, formData: ArticleForm): Promise<void> {
-  const response = await fetch(`${BASE_URL}/articles/${articleId}`, {
+  const response = await fetch(`${API_BASE_URL}/articles/${articleId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
@@ -47,7 +47,7 @@ export async function updateArticle(articleId: string, formData: ArticleForm): P
   }
 }
 export async function deleteArticle(articleId: string): Promise<void> {
-  const response = await fetch(`${BASE_URL}/articles/${articleId}`, {
+  const response = await fetch(`${API_BASE_URL}/articles/${articleId}`, {
     method: 'DELETE',
   });
   if (!response.ok) {
@@ -84,7 +84,7 @@ export async function getVotes(articleId: string): Promise<VoteData> {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getLeaderboard(): Promise<any> {
-  const response = await fetch(`${BASE_URL}/leaderboard`);
+  const response = await fetch(`${API_BASE_URL}/leaderboard`);
   if (!response.ok) {
     throw new Error('Failed to fetch leaderboard');
   }

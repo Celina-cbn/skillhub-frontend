@@ -3,3 +3,8 @@ export interface IInputs {
   name: string,
   type: 'text' | 'password'
 }
+
+export interface ILogin {
+  email: string, 
+  password: string
+}
